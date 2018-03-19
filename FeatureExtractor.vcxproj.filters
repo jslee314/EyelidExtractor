@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="imageSrc">
+      <UniqueIdentifier>{c2d7b9cb-237c-4f03-b6df-c43375a07427}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="FeatureExtractor.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="FeatureExtractorDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ImageFrameWnd.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ImageFrameWndManager.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ImageView.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\MyImage.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\MyImageFunc.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\Features.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="CannyThrsDlg.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="HoughParam.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\LoadImageFromFileDialog.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\Segmentation.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\MorphologyFilter.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\EyelidSeg.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\Graphcut.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\block.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\graph.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\RegionGrowingAlgorithm.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="FeatureExtractor.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="FeatureExtractorDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ImageFrameWnd.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ImageFrameWndManager.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ImageView.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\MyImageFunc.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\Features.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="CannyThrsDlg.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HoughParam.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\LoadImageFromFileDialog.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\Segmentation.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\MorphologyFilter.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\EyelidSeg.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\Graphcut.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\graph.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\maxflow.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\RegionGrowingAlgorithm.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="FeatureExtractor.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\FeatureExtractor.rc2">
+      <Filter>리소스 파일</Filter>
+    </None>
+    <None Include="ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\FeatureExtractor.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+</Project>

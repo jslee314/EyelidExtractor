@@ -1,0 +1,280 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="CAboutDlg">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CAboutDlg::__unnamed_enum_033d_1">
+        <TypeIdentifier>
+          <NewMemberFileName>FeatureExtractorDlg.cpp</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FeatureExtractorDlg.cpp</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CCannyThrsDlg">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CCannyThrsDlg::__unnamed_enum_033a_1">
+        <TypeIdentifier>
+          <NewMemberFileName>CannyThrsDlg.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAAAAABAAAABAAAAQAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>CannyThrsDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CFeatureExtractorApp">
+    <Position X="14.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAABAAAAAAAA=</HashCode>
+      <FileName>FeatureExtractor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CFeatureExtractorDlg">
+    <Position X="1.25" Y="10.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CFeatureExtractorDlg::__unnamed_enum_033e_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>FeatureExtractorDlg.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>EALSAhUAAQIAwBIAQBEgECCYABimJTSEACCAAEBQgBA=</HashCode>
+      <FileName>FeatureExtractorDlg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CHoughParam">
+    <Position X="3" Y="10.25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="CHoughParam::__unnamed_enum_0340_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>HoughParam.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABAAAAABIAABAAAAABAAAAAAAAAAAAAAAgEAAAAAAAA=</HashCode>
+      <FileName>HoughParam.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Block&lt;Type&gt;">
+    <Position X="9" Y="0.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Typedef Name="Block&lt;Type&gt;::block" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\block.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Struct Name="Block&lt;Type&gt;::block_st">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\block.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAABiAAAAEAIAAAEAAAAAAAABIAAAACAgE=</HashCode>
+      <FileName>imageSrc\block.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DBlock&lt;Type&gt;">
+    <Position X="11" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Typedef Name="DBlock&lt;Type&gt;::block_item" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\block.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Typedef Name="DBlock&lt;Type&gt;::block" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\block.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Struct Name="DBlock&lt;Type&gt;::block_st" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\block.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAEAAAAAAAEAAAAAJAIAQAACAAA=</HashCode>
+      <FileName>imageSrc\block.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EHTelmt">
+    <Position X="12.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AADAAAAAAAAAQAAAAAAAACAAAAAAAAAAAAAgIAgAAAA=</HashCode>
+      <FileName>imageSrc\EyelidSeg.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Graph&lt;captype, tcaptype, flowtype&gt;">
+    <Position X="14.5" Y="8" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Typedef Name="Graph&lt;captype, tcaptype, flowtype&gt;::termtype" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Enum Name="Graph&lt;captype, tcaptype, flowtype&gt;::__unnamed_enum_0347_1" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+      <Typedef Name="Graph&lt;captype, tcaptype, flowtype&gt;::node_id" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Struct Name="Graph&lt;captype, tcaptype, flowtype&gt;::node" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Struct Name="Graph&lt;captype, tcaptype, flowtype&gt;::arc" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+      <Typedef Name="Graph&lt;captype, tcaptype, flowtype&gt;::arc_id" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Typedef>
+      <Struct Name="Graph&lt;captype, tcaptype, flowtype&gt;::nodeptr" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>imageSrc\graph.h</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>BAQfEIAkCCAQMCKUAgAIABgAAcCFIEiICCIFAEIAsgg=</HashCode>
+      <FileName>imageSrc\graph.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CImageFrameWnd">
+    <Position X="4.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAEgAAAAAAAACAAAAAAAAAAABCAAAA=</HashCode>
+      <FileName>imageSrc\ImageFrameWnd.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CImageFrameWndManager">
+    <Position X="6.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAgEAAAAgAAABAAAAQAI=</HashCode>
+      <FileName>imageSrc\ImageFrameWndManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CImageView">
+    <Position X="9.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gYAAAAAAAQAAAAAAAABEAAMAAAAAAAAAAAIAAAAQEIA=</HashCode>
+      <FileName>imageSrc\ImageView.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CMyImage&lt;T&gt;" Collapsed="true">
+    <Position X="3.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAgQAIAAAAAAAAAAAEAABMBAKiAgAAQxEgAEgAIBA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="ROI">
+    <Position X="3" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAMgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FeatureExtractorDlg.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Eye_factor">
+    <Position X="1.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAEAABgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>FeatureExtractorDlg.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="point">
+    <Position X="4.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\EyelidSeg.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Roi">
+    <Position X="1.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAMAAAAAAAAAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Point3D">
+    <Position X="4.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="parabolaComponent">
+    <Position X="3" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAABgAAAgCAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Typedef Name="CByteImage" Collapsed="true">
+    <Position X="6.5" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="CIntImage" Collapsed="true">
+    <Position X="0.5" Y="2.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="CFloatImage" Collapsed="true">
+    <Position X="2.75" Y="3.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Typedef Name="CDoubleImage" Collapsed="true">
+    <Position X="2.75" Y="1.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>imageSrc\MyImage.h</FileName>
+    </TypeIdentifier>
+  </Typedef>
+  <Font Name="맑은 고딕" Size="9" />
+</ClassDiagram>
