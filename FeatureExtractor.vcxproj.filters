@@ -16,6 +16,9 @@
     <Filter Include="imageSrc">
       <UniqueIdentifier>{c2d7b9cb-237c-4f03-b6df-c43375a07427}</UniqueIdentifier>
     </Filter>
+    <Filter Include="imageSrc\imageIO">
+      <UniqueIdentifier>{d8ff26b7-f91d-42cf-93f2-8fb8b5b8e868}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,18 +39,6 @@
     <ClInclude Include="Resource.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="imageSrc\ImageFrameWnd.h">
-      <Filter>imageSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="imageSrc\ImageFrameWndManager.h">
-      <Filter>imageSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="imageSrc\ImageView.h">
-      <Filter>imageSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="imageSrc\MyImage.h">
-      <Filter>imageSrc</Filter>
-    </ClInclude>
     <ClInclude Include="imageSrc\MyImageFunc.h">
       <Filter>imageSrc</Filter>
     </ClInclude>
@@ -59,9 +50,6 @@
     </ClInclude>
     <ClInclude Include="HoughParam.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="imageSrc\LoadImageFromFileDialog.h">
-      <Filter>imageSrc</Filter>
     </ClInclude>
     <ClInclude Include="imageSrc\Segmentation.h">
       <Filter>imageSrc</Filter>
@@ -84,6 +72,36 @@
     <ClInclude Include="imageSrc\RegionGrowingAlgorithm.h">
       <Filter>imageSrc</Filter>
     </ClInclude>
+    <ClInclude Include="imageSrc\imageIO\ImageFrameWnd.h">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\imageIO\ImageFrameWndManager.h">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\imageIO\LoadImageFromFileDialog.h">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\imageIO\MyImage.h">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\imageIO\ImageView.h">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ActiveContour.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ZeroCrossings.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ReadWritePBM.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\ChanVeseSegmentation.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
+    <ClInclude Include="imageSrc\Image.h">
+      <Filter>imageSrc</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FeatureExtractor.cpp">
@@ -94,15 +112,6 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="imageSrc\ImageFrameWnd.cpp">
-      <Filter>imageSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="imageSrc\ImageFrameWndManager.cpp">
-      <Filter>imageSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="imageSrc\ImageView.cpp">
-      <Filter>imageSrc</Filter>
     </ClCompile>
     <ClCompile Include="imageSrc\MyImageFunc.cpp">
       <Filter>imageSrc</Filter>
@@ -115,9 +124,6 @@
     </ClCompile>
     <ClCompile Include="HoughParam.cpp">
       <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="imageSrc\LoadImageFromFileDialog.cpp">
-      <Filter>imageSrc</Filter>
     </ClCompile>
     <ClCompile Include="imageSrc\Segmentation.cpp">
       <Filter>imageSrc</Filter>
@@ -138,6 +144,33 @@
       <Filter>imageSrc</Filter>
     </ClCompile>
     <ClCompile Include="imageSrc\RegionGrowingAlgorithm.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\imageIO\ImageFrameWnd.cpp">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\imageIO\ImageFrameWndManager.cpp">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\imageIO\LoadImageFromFileDialog.cpp">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\imageIO\MyImage.cpp">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\imageIO\ImageView.cpp">
+      <Filter>imageSrc\imageIO</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ActiveContour.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ZeroCrossings.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ReadWritePBM.cpp">
+      <Filter>imageSrc</Filter>
+    </ClCompile>
+    <ClCompile Include="imageSrc\ChanVeseSegmentation.cpp">
       <Filter>imageSrc</Filter>
     </ClCompile>
   </ItemGroup>

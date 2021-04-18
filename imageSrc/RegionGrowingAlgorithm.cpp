@@ -2,7 +2,7 @@
 #include "RegionGrowingAlgorithm.h"
 //#include "ArcheImageData.h"
 //#include "vcmi.h"
-#include "MyImage.h"
+#include "imageIO/MyImage.h"
 
 
 RegionGrowingAlgorithm::RegionGrowingAlgorithm(void)

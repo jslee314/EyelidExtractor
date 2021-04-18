@@ -11,16 +11,24 @@
 #include "imageSrc\MorphologyFilter.h"
 #include "imageSrc\EyelidSeg.h"
 #include "imageSrc\Graphcut.h"
+#include "imageSrc\ActiveContour.h"
 
 #include "imageSrc\MyImageFunc.h"				// 이미지 사칙연산등
-#include "imageSrc\ImageFrameWndManager.h"		// 프레임윈도우, 마이 이미지 파일 포함되어 있음
-#include "imageSrc\LoadImageFromFileDialog.h"	// 입력영상 읽을 때 대화상자 띄우는 것
+
+#include "imageSrc\imageIO\ImageFrameWndManager.h"		// 프레임윈도우, 마이 이미지 파일 포함되어 있음
+#include "imageSrc\imageIO\LoadImageFromFileDialog.h"	// 입력영상 읽을 때 대화상자 띄우는 것
 #include "CannyThrsDlg.h"
 #include "HoughParam.h"
 #include <math.h>
 #include <string.h>
 #include <algorithm>
 #include <cmath>
+
+// CV
+#include "imageSrc/Image.h"
+#include "imageSrc/ChanVeseSegmentation.h"
+#include "imageSrc/ReadWritePBM.h"
+#include "imageSrc/ZeroCrossings.h"
 
 
 #ifdef _DEBUG
@@ -84,18 +92,27 @@ BEGIN_MESSAGE_MAP(CFeatureExtractorDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_SOBEL, &CFeatureExtractorDlg::OnBnClickedButtonSobel)
 	ON_BN_CLICKED(IDC_BUTTON_SAVE_IMAGE, &CFeatureExtractorDlg::OnBnClickedButtonSaveImage)
 	
-	ON_BN_CLICKED(IDC_BUTTON_BINARIZATION, &CFeatureExtractorDlg::OnBnClickedButtonBinarization)
-	ON_EN_CHANGE(IDC_EDIT_THRES, &CFeatureExtractorDlg::OnEnChangeEditThres)
-	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_THRES, &CFeatureExtractorDlg::OnNMCustomdrawSliderThres)
+
+
+//	ON_BN_CLICKED(IDC_BUTTON_BINARIZATION, &CFeatureExtractorDlg::OnBnClickedButtonBinarization)
+//	ON_EN_CHANGE(IDC_EDIT_THRES, &CFeatureExtractorDlg::OnEnChangeEditThres)
+//	ON_NOTIFY(NM_CUSTOMDRAW, IDC_SLIDER_THRES, &CFeatureExtractorDlg::OnNMCustomdrawSliderThres)
+
+
 	ON_BN_CLICKED(IDC_BUTTON_Eyelid, &CFeatureExtractorDlg::OnBnClickedButtonEyelid)
 	ON_BN_CLICKED(IDC_BUTTON_DILATION, &CFeatureExtractorDlg::OnBnClickedButtonDilation)
 	ON_BN_CLICKED(IDC_BUTTON_ERSION, &CFeatureExtractorDlg::OnBnClickedButtonErsion)
 	ON_BN_CLICKED(IDC_BUTTON_Pupil, &CFeatureExtractorDlg::OnBnClickedButtonPupil)
 	ON_BN_CLICKED(IDC_BUTTON_Iris, &CFeatureExtractorDlg::OnBnClickedButtonIris)
+
 	ON_BN_CLICKED(IDC_BUTTON_Equli, &CFeatureExtractorDlg::OnBnClickedButtonEquli)
+
 	ON_BN_CLICKED(IDC_BUTTON_Parabola, &CFeatureExtractorDlg::OnBnClickedButtonParabola)
 	ON_BN_CLICKED(IDC_PostDeepLearning, &CFeatureExtractorDlg::OnBnClickedPostdeeplearning)
 	ON_BN_CLICKED(IDC_BUTTON_Roi, &CFeatureExtractorDlg::OnBnClickedButtonRoi)
+	ON_BN_CLICKED(IDC_BUTTON_SNAKE, &CFeatureExtractorDlg::OnBnClickedButtonSnake)
+	ON_BN_CLICKED(IDC_ToGray, &CFeatureExtractorDlg::OnBnClickedTogray)
+	ON_EN_CHANGE(IDC_EDIT1, &CFeatureExtractorDlg::OnEnChangeEdit1)
 END_MESSAGE_MAP()
 
 
@@ -131,8 +148,8 @@ BOOL CFeatureExtractorDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 작은 아이콘을 설정합니다.
 
 	// TODO: 여기에 추가 초기화 작업을 추가합니다.
-	m_sliderThres.SetRange(0, 255);
-	m_sliderThres.SetPos(m_nThreshold);
+	//m_sliderThres.SetRange(0, 255);
+	//m_sliderThres.SetPos(m_nThreshold);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -279,8 +296,15 @@ void CFeatureExtractorDlg::OnBnClickedButtonLoadInput()
 // <결과 저장> 버튼
 void CFeatureExtractorDlg::OnBnClickedButtonSaveImage()
 {
+	CString dir = "D:/";
+	CString str;
+	GetDlgItemText(IDC_EDIT1, str);
+	dir.Append(str);
+	dir.Append(".bmp");
+
 	// TODO: 여기에 컨트롤 알림 처리기 코드를 추가합니다.
-	m_imageOut.SaveImage("Result.bmp");
+	m_imageSAVE.SaveImage(dir);
+	// m_imageOut.SaveImage("D:/Result.bmp");
 
 	/*
 	CString strPath_In = m_imageIn.m_strPathName;
@@ -577,19 +601,19 @@ int CFeatureExtractorDlg::_DetectPupilGL(int MaskSize) {
 			pmin[r*nWidth + c] = mean;
 		}
 	}
-
-	FILE *ff = fopen("D:\ppmin.txt", "a");
+	
+	//FILE *ff = fopen("D:\ppmin.txt", "a");
 	for (int r = maskSize; r < nHeight - maskSize; r++) {
 		for (int c = maskSize; c < nWidth - maskSize; c++) {
 			if (pmin[r*nWidth + c] < minGL) {
 				minGL = pmin[r*nWidth + c];
 			}
-			fprintf(ff, "%d\n", pmin[r*nWidth + c]);
+		//	fprintf(ff, "%d\n", pmin[r*nWidth + c]);
 			//printf("%d\n", pmin[r*nWidth + c]);
 		}
 	}
-	fclose(ff);
-	printf("minGL: %d\n", minGL);
+	//fclose(ff);
+	//printf("minGL: %d\n", minGL);
 	
 	return minGL;
 }
@@ -609,6 +633,50 @@ void CFeatureExtractorDlg::_Crop(int cropSize ) {
 	}
 }
 
+void CFeatureExtractorDlg::_EximageIn(int nThreshold) {
+	int nWidth = m_imageIn.GetWidth();
+	int nHeight = m_imageIn.GetHeight();
+
+	int size =0;
+
+	BYTE* pIn = m_imageIn.GetPtr();
+	BYTE* pInEx = m_imageInEx.GetPtr();
+
+	int mean = 0;
+	memset(m_histogram, 0, 256 * sizeof(int));
+
+	for (int r = 0; r < nHeight; r++) { // 행 이동
+		for (int c = 0; c < nWidth; c++) { // 열 이동
+			if (pIn[nWidth*r +c] > nThreshold) {
+				m_histogram[pIn[nWidth*r + c]]++;
+				size++;
+				mean = mean + pIn[nWidth*r + c];
+			}
+		}
+	}
+	mean = (int)mean / size;
+
+	double dNormFactor = 255.0 / (size);
+	for (int i = 0; i < 256; i++) {
+		m_histogramCdf[i] = m_histogram[i] * dNormFactor;
+	}
+	for (int i = 1; i < 256; i++) {
+		m_histogramCdf[i] = m_histogramCdf[i - 1] + m_histogramCdf[i];
+	}
+	
+	for (int r = 0; r < nHeight; r++) {
+		for (int c = 0; c < nWidth; c++) {
+			if (pIn[nWidth*r + c] > nThreshold) {
+				pInEx[nWidth*r + c] = (BYTE)(m_histogramCdf[pIn[nWidth*r + c]] + 0.5);
+			}
+			else {
+				pInEx[nWidth*r + c] = mean;
+			}
+		}
+	}
+
+}
+
 
 void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 
@@ -616,7 +684,6 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 		AfxMessageBox("입력 영상이 없습니다.");
 		return;
 	}
-
 	int nWidth = m_imageIn.GetWidth();
 	int nHeight = m_imageIn.GetHeight();
 
@@ -624,14 +691,40 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 	m_imageOut  = CByteImage(nWidth, nHeight);
 	m_imageTmp  = CByteImage(nWidth, nHeight);
 	m_imagePupil = CByteImage(nWidth, nHeight);
+	m_imageInEx = CByteImage(nWidth, nHeight);
+
+	int sumofGray = 0;
+	int variation = 0;
+
+	BYTE* pIn = m_imageIn.GetPtr();
+
+	for (int r = 0; r < nHeight; r++) {
+		for (int c = 0; c < nWidth; c++) {
+			sumofGray = sumofGray + pIn[r * nWidth + c];
+		}
+	}
+	printf("\n\%d\n", sumofGray);
+
+	if (sumofGray < 45000000) {
+		variation = 10;
+	}else {
+		variation = 30;
+	}
+
+
 
 	// 1. 이진화 
 	int maskSize = 20;
 	m_nThreshold = _DetectPupilGL(maskSize);
-	// printf("%d\n", m_nThreshold);
+	 printf("%d\n", m_nThreshold);
+	m_nThreshold = m_nThreshold + variation;
+
+	_EximageIn(m_nThreshold);
+	//ShowImage(m_imageInEx, "0. 평활화 결과");
+	
 	Binarization(m_imageIn, m_imageOut, m_nThreshold, 0);
 	//ShowImage(m_imageOut, "1. 이진화 결과");
-
+	
 	// 2. Erosion x3, Dilation x3
 	CByteImage maskErode(5, 5);		// 침식 마스크
 	maskErode.SetConstValue(255);
@@ -643,21 +736,19 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 		m_imageTmp = m_imageOut;		// 임시 입력 영상
 		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
 		Dilate(m_imageTmp, maskDilate, m_imageOut);
-	}
-	//ShowImage(m_imageOut, "2. Dilate x3, 결과");
+	}//ShowImage(m_imageOut, "2. Dilate x3, 결과");
 
 	for (int i = 0; i < morpNum; i++) {
 		m_imageTmp = m_imageOut;		// 임시 입력 영상
 		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
 		Erode(m_imageTmp, maskErode, m_imageOut);
-	}
-//	ShowImage(m_imageOut, "2. Erosion x3, 결과");
+	}//ShowImage(m_imageOut, "4. Erosion x3, 결과");
 
 	// 4. CCL
 	m_imageTmp = m_imageOut;		// 임시 입력 영상
 	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
 	CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, 255, 60);
-	//ShowImage(m_imageOut, "4. CCL 결과");
+	//ShowImage(m_imageOut, "5. CCL 결과");
 
 	// 5. Contour 추출
 	m_imageTmp = m_imageOut;		// 임시 입력 영상
@@ -676,6 +767,8 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
 	CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, 0, 60);
 //	ShowImage(m_imageOut, "7. CCL  결과");
+	
+	//m_imageIn = m_imageInEx;
 
 	// pupil에 저장 ------------------------------
 	BYTE* pOut = m_imageOut.GetPtr();
@@ -692,10 +785,10 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 			}
 		}
 	}
-	ShowImage(m_imagePupil, "m_imagePupil 추출 결과");
+//	ShowImage(m_imagePupil, "m_imagePupil 추출 결과");
 
 	m_imageTmp = m_imageOut;
-	BYTE* pIn = m_imageIn.GetPtr();
+	//BYTE* pIn = m_imageIn.GetPtr();
 	for (int r = 0; r<nHeight; r++){
 		for (int c = 0; c<nWidth; c++){
 
@@ -710,7 +803,7 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 		}
 	}
 	ShowImage(m_imageOut, "imagePupil 추출 결과");
-
+	m_imageSAVE = m_imageOut;
 	/////////////////////////////////////////////////////////////////
 	 
 	Roi r;
@@ -719,7 +812,7 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 //	m_imageTmp = m_imageOut;		// 임시 입력 영상
 	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
 	roi = Detect_ROI(m_imageTmp, m_imageOut, m_imageIn, r);
-	printf("(%d,%d) (%d,%d)\n", roi.stX, roi.stY, roi.endX, roi.endY);
+	//printf("(%d,%d) (%d,%d)\n", roi.stX, roi.stY, roi.endX, roi.endY);
 
 	int rHeight = ((int)((roi.endY - roi.stY) / 2));
 	int rWidth = ((int)((roi.endX - roi.stX) / 2));
@@ -728,14 +821,16 @@ void CFeatureExtractorDlg::OnBnClickedButtonPupil(){
 	f.centerX = roi.endX - rWidth;
 	f.centerY = roi.endY - rHeight;
 	f.pupilR = roi.endX - f.centerX;
-	printf( "center: (%d, %d)\nr: %d \n\n", f.centerX, f.centerY, f.pupilR );
+	//printf( "center: (%d, %d)\nr: %d \n\n", f.centerX, f.centerY, f.pupilR );
+	printf("r: %d \n\n", f.pupilR);
+
 
 	// Roi roi;	
 	roi.stX = 0;
 	roi.endX = 640;
 	roi.stY = f.centerY - 150;
 	roi.endY = f.centerY + 150;
-	printf("start(%d,%d), end(%d,%d)\n", roi.stX, roi.stY, roi.endX, roi.endY);
+	//printf("start(%d,%d), end(%d,%d)\n", roi.stX, roi.stY, roi.endX, roi.endY);
 
 
 }
@@ -749,108 +844,150 @@ void CFeatureExtractorDlg::OnBnClickedButtonIris()
 		AfxMessageBox("홍채 영상이 없습니다.");
 		return;
 	}
-
+	if (m_imagePupil.IsEmpty()) {
+		AfxMessageBox("홍채 추출 먼저 수행하세요");
+		return;
+	}
 	int nWidth = m_imageIn.GetWidth();
 	int nHeight = m_imageIn.GetHeight();
 
-	m_imageOut	= CByteImage(nWidth, nHeight);
-	m_imageTmp	= CByteImage(nWidth, nHeight);
-	m_imagePupil= CByteImage(nWidth, nHeight);
-	m_imageIris = CByteImage(nWidth, nHeight);
-
-	// 1. 이진화 or Otzu_Threshold
-	m_imageTmp = m_imageIn;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	m_nThreshold = 110;
-	Binarization(m_imageTmp, m_imageOut, m_nThreshold, 255);
-
-	// 2. CCL
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, 0, 0);
-
-	// 3. Erosion x3, Dilation x3
-	CByteImage maskErode(5, 5);		// 침식 마스크
-	maskErode.SetConstValue(255);
-
-	CByteImage maskDilate(5, 5);	// 팽창 마스크
-	maskDilate.SetConstValue(255);
-
-	int morpNum = 4;
-	for (int i = 0; i < morpNum; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Erode(m_imageTmp, maskErode, m_imageOut);
-	}
-	for (int i = 0; i < morpNum; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Dilate(m_imageTmp, maskDilate, m_imageOut);
-	}
-
-	// CCL
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, BACKGROUND,0);
+	m_imageOut	 = CByteImage(nWidth, nHeight);
+	m_imageTmp	 = CByteImage(nWidth, nHeight);
+	m_imageTmp.SetConstValue(OBJECT);
+	m_imageOut.SetConstValue(OBJECT);
 	
-	// Contour 추출
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	ContourExtraction(m_imageTmp, m_imageOut);
-	//ShowImage(m_imageOut, "Contour Extraction 결과");
+	// 홍채 roi 잡기
+	//tmp_roi.stX  = f.centerX -141;	tmp_roi.stY  = f.centerY - 141;
+	//tmp_roi.endX = f.centerX +141;	tmp_roi.endY = f.centerY +141;
+	
+	tmp_roi.stX = f.centerX - 141;	tmp_roi.stY = f.centerY - 141;
+	tmp_roi.endX = f.centerX + 141;	tmp_roi.endY = f.centerY ;
 
-	// Convex Hull 추출
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	convex_hull(m_imageTmp, m_imageOut);
-	//ShowImage(m_imageOut, "convex_hull Extraction 결과");
+	Crop_ROI(m_imageIn, m_imageTmp, tmp_roi);
+	ShowImage(m_imageTmp, "홍채 roi");
 
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, 0, 0);
-
-
-	CByteImage maskErode1(1, 7);		// 침식 마스크
-	maskErode1.SetConstValue(255);
-	for (int i = 0; i < 4; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Erode(m_imageTmp, maskErode1, m_imageOut);
-	}
-	CByteImage maskDilate1(7, 1);	// 팽창 마스크
-	maskDilate1.SetConstValue(255);
-	for (int i = 0; i < 4; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Dilate(m_imageTmp, maskDilate1, m_imageOut);
-	}
-
-	// Iris에 저장 ------------------------------
-	 m_imageIris= m_imageOut;
-	//ShowImage(m_imageIris, "m_imageIris 결과");
-
-	BYTE* pOut = m_imageOut.GetPtr();
-	BYTE* pIris = m_imageIris.GetPtr();
-	BYTE* pIn = m_imageIn.GetPtr();
-
-	for (int r = 0; r<nHeight; r++){
-		for (int c = 0; c<nWidth; c++){
-			int index = r*nWidth + c;
-			if (pIris[index] == BACKGROUND) {
-				pOut[index] = pIn[index];
+	// 홍채 roi영역 내에서 동공 제거
+	BYTE* pPupil = m_imagePupil.GetPtr();
+	BYTE* pTmp = m_imageTmp.GetPtr();
+	//for (int r = f.centerY - f.pupilR; r < roi.endY; r++) {
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pPupil[r*nWidth + c] == OBJECT){
+				pTmp[r*nWidth + c] = OBJECT;
 			}
-			if (pIris[index] == OBJECT) {
-				pOut[index] = BACKGROUND;
+		}
+	}ShowImage(m_imageTmp, "동공제거");
+
+
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pTmp[r*nWidth + c] <50) {
+				pTmp[r*nWidth + c] = OBJECT;
+			}
+
+		}
+	}ShowImage(m_imageTmp, "동공제거 후 200 제거");
+
+
+	// 평활화
+	int size = 0;	int mean = 0;
+	memset(m_histogram, 0, 256 * sizeof(int));
+
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pTmp[nWidth*r + c] != OBJECT) {
+				m_histogram[pTmp[nWidth*r + c]]++;
+				size++;
+				mean = mean + pTmp[nWidth*r + c];
 			}
 		}
 	}
-	ShowImage(m_imageOut, "imageIris 추출 결과");	
+	mean = (int)mean / size;
+
+	double dNormFactor = 255.0 / (size);
+	for (int i = 0; i < 256; i++) {
+		m_histogramCdf[i] = m_histogram[i] * dNormFactor;
+	}
+	for (int i = 1; i < 256; i++) {
+		m_histogramCdf[i] = m_histogramCdf[i - 1] + m_histogramCdf[i];
+	}
+
+
+
+	BYTE* pOut = m_imageOut.GetPtr();
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pTmp[nWidth*r + c] == OBJECT) {
+				pOut[nWidth*r + c] =OBJECT;
+			}
+			else {
+				pOut[nWidth*r + c] = (BYTE)(m_histogramCdf[pTmp[nWidth*r + c]] + 0.5);
+			}
+		}
+	}ShowImage(m_imageOut, "공공 제거 후 평활화");
+
+
+	// 10 100 150 
+	m_imageTmp = m_imageOut;
+	//-------------------------------------------------------
+	BYTE* pIn = m_imageIn.GetPtr();
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pTmp[nWidth*r + c] < 15) {
+				pOut[nWidth*r + c] = BACKGROUND;
+			}
+			else {
+				pOut[nWidth*r + c] = OBJECT;
+			}
+		}
+	}ShowImage(m_imageOut, "15");
+
+
+	//m_imageTmp = m_imageOut;
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pTmp[nWidth*r + c] < 30) {
+				pOut[nWidth*r + c] = BACKGROUND;
+			}
+			else {
+				pOut[nWidth*r + c] = OBJECT;
+			}
+		}
+	}ShowImage(m_imageOut, "30");
+
 	
+	//m_imageTmp = m_imageOut;
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (pTmp[nWidth*r + c] < 50) {
+				pOut[nWidth*r + c] = BACKGROUND;
+			}
+			else {
+				pOut[nWidth*r + c] = OBJECT;
+			}
+		}
+	}ShowImage(m_imageOut, "50");
+
+	//m_imageTmp = m_imageOut;
+	for (int r = roi.stY; r < roi.endY; r++) {
+		for (int c = roi.stX; c < roi.endX; c++) {
+			if (20 < pTmp[nWidth*r + c] && pTmp[nWidth*r + c] <80) {
+				pOut[nWidth*r + c] = BACKGROUND;
+			}
+			else {
+				pOut[nWidth*r + c] = OBJECT;
+			}
+		}
+	}ShowImage(m_imageOut, "20 100");
+
+
+
+	
+
+
 }
 
-
-void CFeatureExtractorDlg::OnBnClickedButtonRoi()
-{
+void CFeatureExtractorDlg::OnBnClickedButtonRoi(){
 	if (m_imageIn.IsEmpty()) {
 		AfxMessageBox("입력 영상이 없습니다.");
 		return;
@@ -863,34 +1000,40 @@ void CFeatureExtractorDlg::OnBnClickedButtonRoi()
 	int nHeight = m_imageIn.GetHeight();
 
 	m_imageOut = CByteImage(nWidth, nHeight);
-	m_imageOut.SetConstValue(0);
+	m_imageOut.SetConstValue(OBJECT);
+	
 
 	m_imageEyelid_upper = CByteImage(nWidth, nHeight);
 	m_imageEyelid_under = CByteImage(nWidth, nHeight);
 	m_imageEyelid_upper.SetConstValue(0);
 	m_imageEyelid_under.SetConstValue(0);
+	//-------------------------
 
-	upper.stX = roi.stX;	upper.stY = roi.stY;	upper.endX = roi.endX;	upper.endY = f.centerY;
+	//---------------------------
+	upper.stX = roi.stX;	upper.stY = roi.stY;	
+	upper.endX = roi.endX;	upper.endY = f.centerY+80;	// 동공이 윗쪽으로 되어있는 경우가 많다
 	printf("upper: start(%d,%d), end(%d,%d)\n", upper.stX, upper.stY, upper.endX, upper.endY);
 
-	under.stX = roi.stX;	under.stY = f.centerY;	under.endX = roi.endX;	under.endY = roi.endY;
+	under.stX = roi.stX;	under.stY = f.centerY;	
+	under.endX = roi.endX;	under.endY = roi.endY;
 	printf("under: start(%d,%d), end(%d,%d)\n", under.stX, under.stY, under.endX, under.endY);
 
 	// Roi 영역 crop - up
 	Crop_ROI(m_imageIn, m_imageEyelid_upper, upper);
-	ShowImage(m_imageEyelid_upper, "m_imageEyelid_upper 추출 결과");
+	//ShowImage(m_imageEyelid_upper, "m_imageEyelid_upper 추출 결과");
 
 	// Roi 영역 crop - under
 	Crop_ROI(m_imageIn, m_imageEyelid_under, under);
-	ShowImage(m_imageEyelid_under, "m_imageEyelid_under 추출 결과");
-
-
+	//ShowImage(m_imageEyelid_under, "m_imageEyelid_under 추출 결과");
 
 
 }
 
 
 void CFeatureExtractorDlg::OnBnClickedButtonEyelid(){
+
+	OnBnClickedButtonRoi();
+
 	if (m_imagePupil.IsEmpty()) {
 		AfxMessageBox("동공 추출 먼저 수행하세요");
 		return;
@@ -925,8 +1068,8 @@ void CFeatureExtractorDlg::OnBnClickedButtonEyelid(){
 	BYTE *pOut_under = m_imageOut_under.GetPtr();
 	BYTE * pEyelid = m_imageEyelid.GetPtr();
 
-	for (int r = 0; r<nHeight; r++) {
-		for (int c = 0; c<nWidth; c++) {
+	for (int r = 0; r < nHeight; r++) {
+		for (int c = 0; c < nWidth; c++) {
 			if (pOut[r*nWidth + c] == BACKGROUND) {
 				pEyelid[r*nWidth + c] = pIn[r*nWidth + c];
 			}
@@ -935,19 +1078,21 @@ void CFeatureExtractorDlg::OnBnClickedButtonEyelid(){
 			}
 		}
 	}
-	ShowImage(m_imageEyelid, "under_r 추출 결과");
+	//ShowImage(m_imageEyelid, "under_r 추출 결과");
 	m_imageEyelid.SetConstValue(0);
 
 	// 2) 비어있는 부분 roi로 잡아서 분할
-	_EdgeDetectionInRoi_Auto(m_imageOut, upper);
-	_EdgeDetectionInRoi_Auto(m_imageOut, upper);
-	_EdgeDetectionInRoi_Auto(m_imageOut, upper);
+	// _EdgeDetectionInRoi_Auto(m_imageOut, upper);
+	// _EdgeDetectionInRoi_Auto(m_imageOut, upper);
+	// _EdgeDetectionInRoi_Auto(m_imageOut, upper);
 	
 	_EdgeDetectionInRoi_Auto(m_imageOut, under);
 	_EdgeDetectionInRoi_Auto(m_imageOut, under);
 	_EdgeDetectionInRoi_Auto(m_imageOut, under);
 
+	//ShowImage(m_imageOut, "m_imageOut");
 
+	
 	for (int r = 0; r<nHeight; r++) {
 		for (int c = 0; c<nWidth; c++) {
 			if (pOut[r*nWidth + c] == BACKGROUND) {
@@ -958,13 +1103,17 @@ void CFeatureExtractorDlg::OnBnClickedButtonEyelid(){
 			}
 		}
 	}
-	ShowImage(m_imageEyelid, "roi 들 추출 결과");
+	
+	ShowImage(m_imageEyelid, "눈꺼풀 추출 결과");
 
+	m_imageSAVE = m_imageEyelid;
+	
+/*
 	parabolaComponent *parabolaCompo = new parabolaComponent[2];
 
 	
 	// 5. Parabola Detection
-
+	
 	m_imageTmp = m_imageOut;
 	m_imageEyelid.SetConstValue(0);
 	
@@ -992,7 +1141,7 @@ void CFeatureExtractorDlg::OnBnClickedButtonEyelid(){
 		}
 	}
 	ShowImage(m_imageEyelid, "parabolaCompo 결과");
-	
+	*/
 }
 
 
@@ -1030,8 +1179,8 @@ void CFeatureExtractorDlg::_EdgeDetectionInRoi(CByteImage& imageOut, Roi s_roi) 
 	BYTE* pRoi = m_imageRoi.GetPtr();
 	BYTE* pOut = imageOut.GetPtr();
 
-	for (int r = 0; r<nHeight; r++) {
-		for (int c = 0; c<nWidth; c++) {
+	for (int r = 0; r<nHeight; r++){
+		for (int c = 0; c<nWidth; c++){
 			int index = r*nWidth + c;
 			if (pRoi[index] == OBJECT) {
 				pOut[index] = OBJECT;
@@ -1201,7 +1350,7 @@ void CFeatureExtractorDlg::_EdgeDetectionInRoi_s(CByteImage& imageOut, Roi s_roi
 	imageTmp = m_imageRoi;		
 	m_imageRoi.SetConstValue(0);
 	CCL_eight_long(imageTmp, m_imageRoi, OBJECT);
-	//ShowImage(m_imageRoi, "sCCL");
+	// ShowImage(m_imageRoi, "sCCL");
 
 	BYTE* pRoi = m_imageRoi.GetPtr();
 	BYTE* pOut = imageOut.GetPtr();
@@ -1217,14 +1366,9 @@ void CFeatureExtractorDlg::_EdgeDetectionInRoi_s(CByteImage& imageOut, Roi s_roi
 
 }
 
-
-
-
-
-void CFeatureExtractorDlg::OnBnClickedPostdeeplearning(){
-
-	if (m_imageIn.IsEmpty())
-	{
+void CFeatureExtractorDlg::OnBnClickedPostdeeplearning() {
+	// 0. 영상 입력
+	if (m_imageIn.IsEmpty()) {
 		AfxMessageBox("입력 영상이 없습니다.");
 		return;
 	}
@@ -1232,106 +1376,403 @@ void CFeatureExtractorDlg::OnBnClickedPostdeeplearning(){
 	int nHeight = m_imageIn.GetHeight();
 
 	m_imageOut = CByteImage(nWidth, nHeight);
-	m_imageTmp = CByteImage(nWidth, nHeight);
-	m_imagemid = CByteImage(nWidth, nHeight);
+	m_imageOut.SetConstValue(0);
 
-	BYTE* pIn  = m_imageIn.GetPtr();
-	BYTE* pTmp = m_imageTmp.GetPtr();
+	CByteImage m_imageEdges;
+	m_imageEdges = CByteImage(nWidth, nHeight);
+	m_imageEdges.SetConstValue(0);
+
+	BYTE* pIn = m_imageIn.GetPtr();
 	BYTE* pOut = m_imageOut.GetPtr();
+	BYTE* pEdge = m_imageEdges.GetPtr();
 
-	parabolaComponent *parabolaCompo = new parabolaComponent[1];
+	// ---------------------------------------------------------------------
+	//            1. 입출력 영상 포인터 변수 선언
+	// ---------------------------------------------------------------------
+	Image<BYTE>* img = new Image<BYTE>(nWidth, nHeight);
+	img->Allocate(img->nRows(), img->nCols());
+	img->Set((BYTE)0);
 
-	// 바꾸기
-	ToPixel(m_imageIn, m_imageOut);
-	ShowImage(m_imageOut, "m_imageOut 추출 결과");
+	Image<BYTE>* imageOut = new Image<BYTE>(img->nRows(),img->nCols());
+	Image<double>* phi0 = new Image<double>(img->nRows(),img->nCols());
+	Image<double>* phi = new Image<double>(img->nRows(),img->nCols());
+	Image<BYTE>* edges = new Image<BYTE>(img->nRows(),img->nCols());
+	imageOut->Set((BYTE)0);
+	phi0->Set((double)0);
+	phi->Set((double)0);
+	edges->Set((BYTE)0);
 
-	// Erosion x3, Dilation x3
-	CByteImage maskErode(5, 5);		// 침식 마스크
-	maskErode.SetConstValue(255);
-
-	CByteImage maskDilate(5, 5);	// 팽창 마스크
-	maskDilate.SetConstValue(255);
-
-	int morpNum = 8;
-	for (int i = 0; i < morpNum; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Dilate(m_imageTmp, maskDilate, m_imageOut);
-	}
-	ShowImage(m_imageOut, "maskDilate 추출 결과");
-
-	// 2. CCL
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	CCL_eight(m_imageTmp, m_imageOut, 255);
-
-	ShowImage(m_imageOut, "CCL 추출 결과");
-
-	for (int y = 0; y < nHeight; y++) {
-		for (int x = 0; x < nWidth; x++) {
-
-
+	for (int i = 0; i < img->nRows(); ++i) {
+		for (int j = 0; j < img->nCols(); ++j) {
+			img->data()[i][j] = pIn[j*nWidth + i];
 
 		}
 	}
+
+	// ---------------------------------------------------------------------
+	//            2. Set up parameters (don't hardcode this!)
+	// --------------------------------------------------------------------- 
+	struct CVsetup* pCVinputs = new struct CVsetup;
+	pCVinputs->dt = 0.1;			// time step	0.1
+	pCVinputs->h = 5.0;				// pixel spacing	1.0
+	pCVinputs->lambda1 = 1.0;		// 1.0
+	pCVinputs->lambda2 = 1.0;		// 1.0
+	pCVinputs->mu = 0.5;			// contour length weighting parameter	0.5
+	pCVinputs->nu = 0;				// region area weighting parameter	0
+	pCVinputs->p = 1;				// length weight exponent	1
+
+	// ---------------------------------------------------------------------
+	//            3. Set up initial circular contour for a 256x256 image
+	// ---------------------------------------------------------------------
+	double x;
+	double y;
+	for (int i = 0; i < img->nRows(); ++i){
+		for (int j = 0; j < img->nCols(); ++j){
+			x = double(i) - img->nRows() / 2.0;
+			y = double(j) - img->nCols() / 2.0;
+			phi0->data()[i][j] = 900.0 / (900.0 + x * x + y * y) - 0.5;
+		}
+	}
+
 	
-
-	/*
-	for (int i = 0; i < morpNum; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Erode(m_imageTmp, maskErode, m_imageOut);
-	}
-	ShowImage(m_imageOut, "maskErode 추출 결과");
-	// 2. CCL
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	CCL_eight(m_imageTmp, m_imageOut,  255);
-	ShowImage(m_imageOut, "CCL2 추출 결과");
-
-	// Contour 추출
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	ContourExtraction(m_imageTmp, m_imageOut);
-	ShowImage(m_imageOut, "Contour Extraction 결과");
-
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	convex_hull(m_imageTmp, m_imageOut);
-	ShowImage(m_imageOut, "convex_hull Extraction 결과");
-
-
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-	CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, 0);
-	ShowImage(m_imageOut, "CCL 2추출 결과");
-
-	for (int i = 0; i < 1; i++) {
-		m_imageTmp = m_imageOut;		// 임시 입력 영상
-		m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-		Erode(m_imageTmp, maskErode, m_imageOut);
-	}
-
-	BYTE* pMid = m_imagemid.GetPtr();
-
-	m_imageTmp = m_imageOut;		// 임시 입력 영상
-	m_imageOut.SetConstValue(0);	// 결과 영상 초기화
-
-	for (int r = 0; r<nHeight; r++) {
-		for (int c = 0; c<nWidth; c++) {
-			int index = r*nWidth + c;
-			if (pTmp[index] == BACKGROUND) {
-				pOut[index] = pIn[index];
-				pMid[index] = BACKGROUND;
-			}
-			if (pTmp[index] == OBJECT) {
-				pOut[index] = BACKGROUND;
-				pMid[index] = pIn[index];
-			}
+	// ---------------------------------------------------------------------
+	//            4. Performing segmentation & Getting zero crossings
+	// ---------------------------------------------------------------------
+	
+	ChanVeseSegmentation(img, phi0, &phi, pCVinputs);
+	for (int i = 0; i < img->nRows(); ++i) {
+		for (int j = 0; j < img->nCols(); ++j) {
+			pOut[j*nWidth + i] = phi->data()[i][j];
 		}
 	}
-	ShowImage(m_imageOut, "최종 추출 결과");
-	ShowImage(m_imagemid, "최종 추출 결과2");
-	*/
+	ShowImage(m_imageOut, "phi0");
+	m_imageOut.SetConstValue(0);
+
+
+	ZeroCrossings(phi, &edges, (BYTE)255, (BYTE)0);
+
+	for (int i = 0; i < img->nRows(); ++i) {
+		for (int j = 0; j < img->nCols(); ++j) {
+			pOut[j*nWidth + i] = phi->data()[i][j];
+		}
+	}
+	ShowImage(m_imageOut, "phi");
+	m_imageOut.SetConstValue(0);
+
+	// ---------------------------------------------------------------------
+	//            5. Print Result image
+	// ---------------------------------------------------------------------
+	imageOut->CopyFrom(img);
+	for (int i = 0; i < img->nRows(); ++i)
+	{
+		for (int j = 0; j < img->nCols(); ++j)
+		{
+			if (edges->data()[i][j] == (BYTE)255)
+				imageOut->data()[i][j] = (BYTE)255;
+		}
+	}
+	imageOut->CopyFrom(img);
+	for (int i = 0; i < img->nRows(); ++i){
+		for (int j = 0; j < img->nCols(); ++j){
+			if (phi->data()[i][j] >= 0)
+				imageOut->data()[i][j] = (BYTE)0;
+			else
+				imageOut->data()[i][j] = (BYTE)255;
+		}
+	}
+
+	for (int i = 0; i < img->nRows(); ++i) {
+		for (int j = 0; j < img->nCols(); ++j) {
+			pOut[j*nWidth + i] = imageOut->data()[i][j];
+			pEdge[j*nWidth + i] = edges->data()[i][j];
+		}
+	}
+	ShowImage(m_imageOut, "out");
+	ShowImage(m_imageEdges, "edge");
+
+
+
 }
 
+
+
+
+
+void CFeatureExtractorDlg::OnBnClickedButtonSnake(){
+	// 0. 영상 입력
+	if (m_imageIn.IsEmpty()){
+		AfxMessageBox("입력 영상이 없습니다.");
+		return;
+	}
+	int nWidth = m_imageIn.GetWidth();
+	int nHeight = m_imageIn.GetHeight();
+	
+	BYTE* pIn = m_imageIn.GetPtr();
+
+	m_imageOut = CByteImage(nWidth, nHeight);
+	m_imageOut.SetConstValue(0);
+	BYTE* pOut = m_imageOut.GetPtr();
+
+	m_imageTmp = CByteImage(nWidth, nHeight);
+	m_imageTmp.SetConstValue(0);
+	BYTE* pTmp = m_imageTmp.GetPtr();
+	// ---------------------------------------------------------------------
+	//            1. chanel_gradient/ flow 계산하기
+	// ---------------------------------------------------------------------
+	int* chanel_gradient = new int[nWidth*nHeight];
+	memset(chanel_gradient, 0, sizeof(int)*nWidth*nHeight);
+
+	int* chanel_flow = new int[nWidth*nHeight];
+	memset(chanel_flow, 0, sizeof(int)*nWidth*nHeight);
+	
+	int THRESHOLD = 20;
+	computegflow(m_imageIn, chanel_gradient, chanel_flow, THRESHOLD);
+
+	for (int r = 0; r < nHeight; r++) {
+		for (int c = 0; c < nWidth; c++) {
+			int index = r * nWidth + c;
+			pOut[index] = chanel_gradient[index];
+			pTmp[index] = chanel_flow[index];     
+		}
+	}
+	ShowImage(m_imageOut, "chanel_gradient");
+	ShowImage(m_imageTmp, "chanel_flow");
+	m_imageOut.SetConstValue(0);
+
+	// ---------------------------------------------------------------------
+	//            2. initial point 계산하기(원)
+	// ---------------------------------------------------------------------	
+	int in_MAXLEN=50;
+	VECTOR_P circle = initialPoint(in_MAXLEN);
+	display(m_imageOut, circle);
+	ShowImage(m_imageOut, "circle");
+	m_imageOut.SetConstValue(0);
+	// ---------------------------------------------------------------------
+	//            3. Snake 클래스 생성 및 초기 파라미터 지정
+	// ---------------------------------------------------------------------
+	
+	Snake _snake(nWidth, nHeight, chanel_gradient, chanel_flow, circle);
+
+	_snake.alpha = 1.0;			// alpha = coefficient for uniformity(high = > force equals distance between points)
+	_snake.beta  = 1.0;			// beta  = coefficient for curvature  (high => force smooth curvature)
+	_snake.gamma = 1.0;			// gamma  = coefficient for flow      (high => force gradient attraction)
+	_snake.delta = 1.0;			// delta  = coefficient for intertia  (high => get stuck to gradient)
+
+
+	_snake.AUTOADAPT_LOOP = 10;
+
+	_snake.AUTOADAPT_MAXLEN = in_MAXLEN;
+	_snake.AUTOADAPT_MINLEN = 8;
+	  
+	_snake.MAXITERATION = 50;
+
+	_snake.width = nWidth;
+	_snake.height = nHeight;
+
+	// ---------------------------------------------------------------------
+	//           4. loop() 함수 실행
+	// ---------------------------------------------------------------------
+	int nmloop = _snake.loop();
+
+	// ---------------------------------------------------------------------
+	//            5. 화면 출력
+	// ---------------------------------------------------------------------
+	display(m_imageOut, _snake.snake);
+	ShowImage(m_imageOut, "drawline");
+	m_imageTmp = m_imageOut;
+	for (int r = 0; r < nHeight; r++) {
+		for (int c = 0; c < nWidth; c++) {
+			int index = r * nWidth + c;
+			
+			if (pOut[index] == BACKGROUND) {
+				pTmp[index] = pIn[index];
+			}
+			if (pOut[index] == OBJECT) {
+			//	pTmp[index] = BACKGROUND;
+			}
+		}
+	}
+	ShowImage(m_imageTmp, "drawline in image");
+	
+	delete[] chanel_flow;
+	delete[] chanel_gradient;
+}
+
+
+
+
+
+/*
+void CFeatureExtractorDlg::OnBnClickedPostdeeplearning(){
+
+if (m_imageIn.IsEmpty())
+{
+AfxMessageBox("입력 영상이 없습니다.");
+return;
+}
+int nWidth = m_imageIn.GetWidth();
+int nHeight = m_imageIn.GetHeight();
+
+m_imageOut = CByteImage(nWidth, nHeight);
+m_imageTmp = CByteImage(nWidth, nHeight);
+m_imagemid = CByteImage(nWidth, nHeight);
+
+BYTE* pIn  = m_imageIn.GetPtr();
+BYTE* pTmp = m_imageTmp.GetPtr();
+BYTE* pOut = m_imageOut.GetPtr();
+
+parabolaComponent *parabolaCompo = new parabolaComponent[1];
+
+// 바꾸기
+ToPixel(m_imageIn, m_imageOut);
+ShowImage(m_imageOut, "m_imageOut 추출 결과");
+
+// Erosion x3, Dilation x3
+CByteImage maskErode(5, 5);		// 침식 마스크
+maskErode.SetConstValue(255);
+
+CByteImage maskDilate(5, 5);	// 팽창 마스크
+maskDilate.SetConstValue(255);
+
+int morpNum = 8;
+for (int i = 0; i < morpNum; i++) {
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+Dilate(m_imageTmp, maskDilate, m_imageOut);
+}
+ShowImage(m_imageOut, "maskDilate 추출 결과");
+
+// 2. CCL
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+CCL_eight(m_imageTmp, m_imageOut, 255);
+
+ShowImage(m_imageOut, "CCL 추출 결과");
+
+for (int y = 0; y < nHeight; y++) {
+for (int x = 0; x < nWidth; x++) {
+
+
+
+}
+}
+
+
+
+for (int i = 0; i < morpNum; i++) {
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+Erode(m_imageTmp, maskErode, m_imageOut);
+}
+ShowImage(m_imageOut, "maskErode 추출 결과");
+// 2. CCL
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+CCL_eight(m_imageTmp, m_imageOut,  255);
+ShowImage(m_imageOut, "CCL2 추출 결과");
+
+// Contour 추출
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+ContourExtraction(m_imageTmp, m_imageOut);
+ShowImage(m_imageOut, "Contour Extraction 결과");
+
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+convex_hull(m_imageTmp, m_imageOut);
+ShowImage(m_imageOut, "convex_hull Extraction 결과");
+
+
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+CCL_four(m_imageTmp, m_imageOut, nWidth, nHeight, 0);
+ShowImage(m_imageOut, "CCL 2추출 결과");
+
+for (int i = 0; i < 1; i++) {
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+Erode(m_imageTmp, maskErode, m_imageOut);
+}
+
+BYTE* pMid = m_imagemid.GetPtr();
+
+m_imageTmp = m_imageOut;		// 임시 입력 영상
+m_imageOut.SetConstValue(0);	// 결과 영상 초기화
+
+for (int r = 0; r<nHeight; r++) {
+for (int c = 0; c<nWidth; c++) {
+int index = r*nWidth + c;
+if (pTmp[index] == BACKGROUND) {
+pOut[index] = pIn[index];
+pMid[index] = BACKGROUND;
+}
+if (pTmp[index] == OBJECT) {
+pOut[index] = BACKGROUND;
+pMid[index] = pIn[index];
+}
+}
+}
+ShowImage(m_imageOut, "최종 추출 결과");
+ShowImage(m_imagemid, "최종 추출 결과2");
+
+}*/
+
+void CFeatureExtractorDlg::OnBnClickedTogray()
+{/*
+	if (m_imageIn.IsEmpty()){
+		AfxMessageBox("입력 영상이 없습니다.");
+		return;
+	}
+	int nWidth = m_imageIn.GetWidth();
+	int nHeight = m_imageIn.GetHeight();
+
+	BYTE* pIn = m_imageIn.GetPtr();
+
+	m_imageOut = CByteImage(nWidth, nHeight);
+	m_imageOut.SetConstValue(0);
+	BYTE* pOut = m_imageOut.GetPtr();
+
+	// 비트맵 '파일 헤더'를 읽어서 담기위한 구조체를 생성한다.
+	BITMAPFILEHEADER fileHeader;
+
+	// 비트맵 '영상 정보 헤더'를 읽어서 담기 위한 구조체를 생성
+	BITMAPINFOHEADER infoHeader;
+
+	infoHeader.biBitCount = 8;	// infoHeader.biBitCount = 24	// 픽셀당 비트수
+	m_imageOut.m_nChannels = infoHeader.biBitCount / 8;
+	m_imageOut.m_nHeight = infoHeader.biHeight;
+	m_imageOut.m_nWidth = infoHeader.biWidth;
+	m_imageOut.m_nWStep = (m_imageOut.m_nWidth*m_imageOut.m_nChannels * sizeof(T) + 3)&~3;
+	
+	// 비트맵 '파레트' 정보
+	RGBQUAD infoPallet;
+
+	pOut[]infoPallet.rgbBlue;
+	infoPallet.rgbGreen;
+	infoPallet.rgbRed;
+	infoPallet.rgbReserved;
+	*/
+	
+
+
+	//	YCrCb
+	//	Y = Red * 0.2126 + Geeen * 0.7152 + Blue * 0.0722
+	//	YPrPb
+	//	Y = Red * 0.299 + Green * 0.587 + Blue * 0.114
+
+	
+}
+
+
+void CFeatureExtractorDlg::OnEnChangeEdit1()
+{
+	// TODO:  RICHEDIT 컨트롤인 경우, 이 컨트롤은
+	// CDialogEx::OnInitDialog() 함수를 재지정 
+	//하고 마스크에 OR 연산하여 설정된 ENM_CHANGE 플래그를 지정하여 CRichEditCtrl().SetEventMask()를 호출하지 않으면
+	// 이 알림 메시지를 보내지 않습니다.
+
+	// TODO:  여기에 컨트롤 알림 처리기 코드를 추가합니다.
+	//m_edit.
+	CString str;
+	//GetDlgItemText(IDC_EDIT1, str);
+}

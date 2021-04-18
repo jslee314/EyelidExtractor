@@ -22,7 +22,7 @@
     <ProjectGuid>{D24BD8A5-F966-4C92-AE9C-695A4414954C}</ProjectGuid>
     <RootNamespace>FeatureExtractor</RootNamespace>
     <Keyword>MFCProj</Keyword>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -45,7 +45,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -53,7 +53,7 @@
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
-    <UseOfMfc>Dynamic</UseOfMfc>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -96,7 +96,6 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>
       </AdditionalDependencies>
@@ -147,10 +146,13 @@
       <SDLCheck>true</SDLCheck>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
+      <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <StackReserveSize>1048576</StackReserveSize>
+      <StackCommitSize>
+      </StackCommitSize>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -197,20 +199,25 @@
     <ClInclude Include="FeatureExtractor.h" />
     <ClInclude Include="FeatureExtractorDlg.h" />
     <ClInclude Include="HoughParam.h" />
+    <ClInclude Include="imageSrc\ActiveContour.h" />
     <ClInclude Include="imageSrc\block.h" />
+    <ClInclude Include="imageSrc\ChanVeseSegmentation.h" />
     <ClInclude Include="imageSrc\EyelidSeg.h" />
     <ClInclude Include="imageSrc\Features.h" />
     <ClInclude Include="imageSrc\graph.h" />
     <ClInclude Include="imageSrc\Graphcut.h" />
-    <ClInclude Include="imageSrc\ImageFrameWnd.h" />
-    <ClInclude Include="imageSrc\ImageFrameWndManager.h" />
-    <ClInclude Include="imageSrc\ImageView.h" />
-    <ClInclude Include="imageSrc\LoadImageFromFileDialog.h" />
+    <ClInclude Include="imageSrc\Image.h" />
+    <ClInclude Include="imageSrc\imageIO\ImageFrameWnd.h" />
+    <ClInclude Include="imageSrc\imageIO\ImageFrameWndManager.h" />
+    <ClInclude Include="imageSrc\imageIO\ImageView.h" />
+    <ClInclude Include="imageSrc\imageIO\LoadImageFromFileDialog.h" />
+    <ClInclude Include="imageSrc\imageIO\MyImage.h" />
     <ClInclude Include="imageSrc\MorphologyFilter.h" />
-    <ClInclude Include="imageSrc\MyImage.h" />
     <ClInclude Include="imageSrc\MyImageFunc.h" />
+    <ClInclude Include="imageSrc\ReadWritePBM.h" />
     <ClInclude Include="imageSrc\RegionGrowingAlgorithm.h" />
     <ClInclude Include="imageSrc\Segmentation.h" />
+    <ClInclude Include="imageSrc\ZeroCrossings.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
@@ -220,19 +227,24 @@
     <ClCompile Include="FeatureExtractor.cpp" />
     <ClCompile Include="FeatureExtractorDlg.cpp" />
     <ClCompile Include="HoughParam.cpp" />
+    <ClCompile Include="imageSrc\ActiveContour.cpp" />
+    <ClCompile Include="imageSrc\ChanVeseSegmentation.cpp" />
     <ClCompile Include="imageSrc\EyelidSeg.cpp" />
     <ClCompile Include="imageSrc\Features.cpp" />
     <ClCompile Include="imageSrc\graph.cpp" />
     <ClCompile Include="imageSrc\Graphcut.cpp" />
-    <ClCompile Include="imageSrc\ImageFrameWnd.cpp" />
-    <ClCompile Include="imageSrc\ImageFrameWndManager.cpp" />
-    <ClCompile Include="imageSrc\ImageView.cpp" />
-    <ClCompile Include="imageSrc\LoadImageFromFileDialog.cpp" />
+    <ClCompile Include="imageSrc\imageIO\ImageFrameWnd.cpp" />
+    <ClCompile Include="imageSrc\imageIO\ImageFrameWndManager.cpp" />
+    <ClCompile Include="imageSrc\imageIO\ImageView.cpp" />
+    <ClCompile Include="imageSrc\imageIO\LoadImageFromFileDialog.cpp" />
+    <ClCompile Include="imageSrc\imageIO\MyImage.cpp" />
     <ClCompile Include="imageSrc\maxflow.cpp" />
     <ClCompile Include="imageSrc\MorphologyFilter.cpp" />
     <ClCompile Include="imageSrc\MyImageFunc.cpp" />
+    <ClCompile Include="imageSrc\ReadWritePBM.cpp" />
     <ClCompile Include="imageSrc\RegionGrowingAlgorithm.cpp" />
     <ClCompile Include="imageSrc\Segmentation.cpp" />
+    <ClCompile Include="imageSrc\ZeroCrossings.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

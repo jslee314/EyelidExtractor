@@ -9,7 +9,7 @@
 #pragma once
 
 // 콘솔창 띄어주기 jslee
-#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
+// #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")
 
 
 #ifndef VC_EXTRALEAN

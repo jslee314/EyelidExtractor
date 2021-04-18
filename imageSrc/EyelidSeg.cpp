@@ -933,16 +933,18 @@ Roi Detect_ROI( CByteImage& imageObj, CByteImage& imageOut, const CByteImage& im
 
 void Crop_ROI(const CByteImage& imageIn, CByteImage& imageOut,  Roi Rroi) {
 
+
+
 	int nWidth = imageIn.GetWidth();
 	int nHeight = imageIn.GetHeight();
 
 	BYTE *pIn = imageIn.GetPtr();
 	BYTE *pOut = imageOut.GetPtr();
 
-	for (int r = Rroi.stY; r<Rroi.endY; r++) {
-		for (int c = Rroi.stX; c<Rroi.endX; c++) {
-			int index = r*nWidth + c;
-				pOut[index] = pIn[index];
+	for (int r = Rroi.stY; r < Rroi.endY; r++) {
+		for (int c = Rroi.stX; c < Rroi.endX; c++) {
+			int index = r * nWidth + c;
+			pOut[index] = pIn[index];
 		}
 	}
 }

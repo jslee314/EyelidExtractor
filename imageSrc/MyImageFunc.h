@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MyImage.h"
+#include "imageIO/MyImage.h"
 
 #define IN_IMG(x, lo, hi) (x < lo)? lo : x > hi ? hi : x
 #define MIN(a,b)  ((a) > (b) ? (b) : (a))

@@ -2,6 +2,7 @@
 
 #include "ImageView.h"
 
+
 // CImageFrameWnd frame
 
 class CImageFrameWnd : public CFrameWnd

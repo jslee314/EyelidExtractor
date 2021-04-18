@@ -1,5 +1,4 @@
 // ImageFrameWnd.cpp : implementation file
-//
 
 #include "stdafx.h"
 #include "ImageFrameWnd.h"

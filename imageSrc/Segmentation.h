@@ -1,5 +1,5 @@
 #pragma once
-#include "MyImage.h"
+#include "imageIO/MyImage.h"
 #define MAX_CLUSTER 10
 
 void Binarization(const CByteImage& imageIn, CByteImage& imageOut, int nThreshold, int objGL);

@@ -1,5 +1,5 @@
 #pragma once
-#include "MyImage.h"
+#include "imageIO/MyImage.h"
 #include <vector>
 using namespace std;
 

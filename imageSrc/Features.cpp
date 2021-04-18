@@ -4,7 +4,7 @@
 #include "MyImageFunc.h"
 #include <math.h>
 
-#include "ImageFrameWndManager.h"
+#include "imageIO/ImageFrameWndManager.h"
 
 
 void DrawLine(CByteImage& canvas, int x1, int y1, int x2, int y2, BYTE val)
@@ -176,7 +176,53 @@ int HoughLines(const CByteImage& imageIn, int nTNum, int nTVal, double resTheta,
 	return nLine;
 }
 
+void SobelEdge_Int(const CByteImage& imageIn, CIntImage& imageOut)
+{
+	int nWidth = imageIn.GetWidth();
+	int nHeight = imageIn.GetHeight();
+	imageOut = CIntImage(nWidth, nHeight);
+	imageOut.SetConstValue(0);
 
+	int nWStep = imageIn.GetWStep();
+
+	// Sobel 마스크
+	int Gx[9], Gy[9];
+	Gx[0] = -1; Gx[1] = 0; Gx[2] = 1;
+	Gx[3] = -2; Gx[4] = 0; Gx[5] = 2;
+	Gx[6] = -1; Gx[7] = 0; Gx[8] = 1;
+
+	Gy[0] = 1; Gy[1] = 2; Gy[2] = 1;
+	Gy[3] = 0; Gy[4] = 0; Gy[5] = 0;
+	Gy[6] = -1; Gy[7] = -2; Gy[8] = -1;
+
+	BYTE* pIn = imageIn.GetPtr();
+	INT* pOut = imageOut.GetPtr();
+
+	for (int r = 1; r<nHeight - 1; r++) // 영상 경계는 제외
+	{
+		for (int c = 1; c<nWidth - 1; c++) // 영상 경계는 제외
+		{
+			int sumX = 0;
+			int sumY = 0;
+			for (int y = 0; y<3; y++)
+			{
+				for (int x = 0; x<3; x++)
+				{
+					int py = r - 1 + y;
+					int px = c - 1 + x;
+					if (px >= 0 && px<nWidth && py >= 0 && py<nHeight)
+					{
+						sumX += Gx[y * 3 + x] * pIn[py*nWStep + px];
+						sumY += Gy[y * 3 + x] * pIn[py*nWStep + px];
+					}
+				}
+			}
+			//		pOut[c] = sqrt((double)(sumX*sumX + sumY*sumY)/32); // 경계선의 세기
+			pOut[c] = MIN(sqrt((double)(sumX*sumX + sumY * sumY) / 4), 255);
+		}
+		pOut += nWStep;
+	}
+}
 
 void SobelEdge(const CByteImage& imageIn, CByteImage& imageOut)
 {
@@ -434,7 +480,7 @@ void CannyEdge(const CByteImage& imageIn, CByteImage& imageOut, int nThresholdHi
 		} // 열 이동 끝
 	} // 행 이동 끝
 
-	imageCand.SaveImage("Cand.bmp");
+	//imageCand.SaveImage("Cand.bmp");
 	//imageOut = imageCand;
 	
 	

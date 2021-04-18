@@ -1,5 +1,5 @@
 #pragma once
-#include "MyImage.h"
+#include "imageIO/MyImage.h"
 
 void Erode(const CByteImage& imageIn, const CByteImage& mask, CByteImage& imageOut);
 void Dilate(const CByteImage& imageIn, const CByteImage& mask, CByteImage& imageOut);

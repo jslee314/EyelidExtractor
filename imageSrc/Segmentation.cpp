@@ -5,7 +5,7 @@ void Binarization(const CByteImage& imageIn, CByteImage& imageOut, int nThreshol
 {
 
 
-	ASSERT(imageIn.GetChannel() == 1);
+	//ASSERT(imageIn.GetChannel() == 1);
 
 	int nWidth = imageIn.GetWidth();
 	int nHeight = imageIn.GetHeight();

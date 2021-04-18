@@ -2,9 +2,10 @@
 
 //#include "queue"
 //#include "ArcheImageData.h"
-#include "MyImage.h"
+#include "imageIO/MyImage.h"
 #include "MyImageFunc.h"
 #include <queue>
+using namespace std;
 
 class RegionGrowingCondition
 {

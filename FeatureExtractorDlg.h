@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "imageSrc/MyImage.h"
+#include "imageSrc\imageIO\MyImage.h"
 struct lineList {
 	int i;
 	int stL;
@@ -15,8 +15,7 @@ struct lineList {
 
 
 // CFeatureExtractorDlg 대화 상자
-class CFeatureExtractorDlg : public CDialogEx
-{
+class CFeatureExtractorDlg : public CDialogEx {
 // 생성입니다.
 public:
 	CFeatureExtractorDlg(CWnd* pParent = NULL);	// 표준 생성자입니다.
@@ -60,6 +59,9 @@ public:
 	CByteImage  m_imageEyelid_under;
 
 	Roi		roi;
+
+	Roi		tmp_roi;
+
 	Roi		upper;
 	Roi		under;
 	Eye_factor f;
@@ -75,19 +77,26 @@ public:
 	Roi under_r;
 	Roi under_m;
 
+	//SNAKE
+
+
 protected:
 	CByteImage  m_imageIn;
+	CByteImage	m_imageInEx;
 	CByteImage	m_imageOut;
+	CByteImage	m_imageSAVE;
+	
 	CByteImage  m_imagemid;
 	CByteImage	m_imageTmp;
 
+	
 	CByteImage	m_imagePupil;
 	CByteImage	m_imageIris;
 	CByteImage	m_imageEyelid;
 
 	int			m_nThreshold;
 	CSliderCtrl m_sliderThres;
-
+	CString     m_edit;
 
 
 
@@ -121,16 +130,20 @@ public:
 	void _HistogramEqualization();
 
 	void _Crop(int cropSize);
-	int _DetectPupilGL(int maskSize);
+	void _EximageIn(int nThreshold);
+	int  _DetectPupilGL(int maskSize);
 	void _EdgeDetectionInRoi(CByteImage& m_imageRoi, Roi under);
 	void _EdgeDetectionInRoi_s(CByteImage& m_imageRoi, Roi under);
 	void _EdgeDetectionInRoi_Auto(CByteImage& m_imageRoi, Roi under);
 	int _EmptylineRoi(CByteImage& m_imageRoi, Roi s_roi, Roi *r);
-
+	//void computegflow(const CByteImage& imageIn, BYTE* chanel_gradient, BYTE* chanel_flow);
 
 
 	afx_msg void OnBnClickedButtonEquli();
 	afx_msg void OnBnClickedButtonParabola();
 	afx_msg void OnBnClickedPostdeeplearning();
 	afx_msg void OnBnClickedButtonRoi();
+	afx_msg void OnBnClickedButtonSnake();
+	afx_msg void OnBnClickedTogray();
+	afx_msg void OnEnChangeEdit1();
 };
