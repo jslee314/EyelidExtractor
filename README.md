@@ -2,9 +2,9 @@
 
 
 ### 개발환경
-CPU: intel core 8세대, I5-8400
-운영체제: Window 10
-개발 툴: Visual Studio Community 2017 (version 15.7.5) 
+- CPU: intel core 8세대, I5-8400
+- 운영체제: Window 10
+- 개발 툴: Visual Studio Community 2017 (version 15.7.5) 
 
 ### 개발 기간 
 2018년 02월 07일 ~ 2018년 03월 30일
@@ -26,11 +26,11 @@ CPU: intel core 8세대, I5-8400
 3. 해당 내용을 실행할 실행(exe) 파일
 
 ### 실행 파일 설명
-Load Image(BUTTON) :  분할하고자 하는 이미지 파일을 불러옴
-Pupil Segmentation(BUTTON): 불러온 이미지에 대하여 동공 분할(segmentation) 수행
-Eyelid Segmentation(BUTTON): 동공 분할 수 눈꺼풀 분할 수행
-파일이름(TextEditor): 해당 결과를 이미지파일로 저장할 이름
-Save Image(BUTTON): 이미지 저장 (D드라이브)  
+- Load Image(BUTTON) :  분할하고자 하는 이미지 파일을 불러옴
+- Pupil Segmentation(BUTTON): 불러온 이미지에 대하여 동공 분할(segmentation) 수행
+- Eyelid Segmentation(BUTTON): 동공 분할 수 눈꺼풀 분할 수행
+- 파일이름(TextEditor): 해당 결과를 이미지파일로 저장할 이름
+- Save Image(BUTTON): 이미지 저장 (D드라이브)  
 
 
 ![image](https://user-images.githubusercontent.com/40026846/115137176-7f1ee300-a05f-11eb-98fa-e7c81be3dc83.png)
@@ -38,7 +38,7 @@ Save Image(BUTTON): 이미지 저장 (D드라이브)
 ------------------------------------------------------------------------------------------------------------------------------
 
 
-## MFC 라이브러리 : FeatureExtractor 프로젝트 개요
+#### MFC 라이브러리 : FeatureExtractor 프로젝트 개요(visual studtio )
 
 
 응용 프로그램 마법사에서 이 FeatureExtractor 응용 프로그램을 만들었습니다. 이 응용 프로그램은 MFC의 기본 사용법을 보여 줄 뿐만 아니라 응용 프로그램을 작성하기 위한 기본 구조를 제공합니다.
