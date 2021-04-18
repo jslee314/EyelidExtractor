@@ -32,8 +32,8 @@
 - 파일이름(TextEditor): 해당 결과를 이미지파일로 저장할 이름
 - Save Image(BUTTON): 이미지 저장 (D드라이브)  
 
+![image](https://user-images.githubusercontent.com/40026846/115137384-c35eb300-a060-11eb-8ab2-9060ccdcf5ad.png)
 
-![image](https://user-images.githubusercontent.com/40026846/115137176-7f1ee300-a05f-11eb-98fa-e7c81be3dc83.png)
 
 ------------------------------------------------------------------------------------------------------------------------------
 
